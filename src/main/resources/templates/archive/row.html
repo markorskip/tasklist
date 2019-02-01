@@ -1,0 +1,79 @@
+<html>
+<head>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<style>
+
+    .prop {
+        width: 100px;
+        background: lightgrey;
+        float: left;
+    }
+
+</style>
+<body>
+<div id="app">
+    Tasks: <br/>
+
+    <div v-for="task, index in tasks" :key="index" :style="indent(task.depth)">
+    <div class="prop">{{ task.label }}</div>
+    <div class="prop"> Index: {{ index }}</div>
+    <div class="prop"v-if="computedCost(index, task.depth) > task.cost">Computed: <span v-text="computedCost(index, task.depth)"></span></div><div class="prop" v-else>Cost: {{ task.cost }}</div>
+    <button @click="addChild(index, task.depth)"> Add Child </button>
+    <button @click="deleteTask(index, task.depth)"> Delete </button>
+    <!--<button @click="save"> Save </button>-->
+
+
+    </div>
+
+    <p>{{ tasks }}</p>
+
+</div>
+
+</body>
+<script>
+
+    var init = [{row: 1, depth: 0, label: "Root", cost: 0}];
+
+    new Vue({
+       el: "#app",
+       data: {
+           tasks: init,
+       },
+        methods: {
+            addChild(index, depth) {
+               this.tasks.splice(index+1, 0, {depth: depth+1, label: "new Row", cost: 5});
+           },
+            indent(depth) {
+                return { transform: `translate(${depth * 75}px)` }
+            },
+            computedCost(index, depth) {
+                let computedCost = 0;
+                if (this.tasks[index+1]) {
+                    if (this.tasks[index + 1].depth > depth) {  //If I have a child
+                        this.tasks.forEach(function (task, i) {
+                            if (i > index && task.depth > depth) {
+                                computedCost += task.cost;
+                            }
+                        });
+                    }
+                }
+                if (computedCost > 0) { this.tasks[index].cost=0; }// Once you compute a cost, you don't have your own }
+                return computedCost;
+            },
+            deleteTask(index, depth) {
+
+                //Remove the
+                this.tasks.splice(index, 1);
+
+                this.tasks.forEach(function(task) {
+                    if (task.row > row ) {
+                        task.row--;
+                    }
+                });
+            }
+        }
+    });
+</script>
+</html>

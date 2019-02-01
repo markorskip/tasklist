@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+</head>
+<body>
+<h1>Welcome to TaskList</h1>
+
+<div id="app">
+    <tree-menu :label="tree.label" :nodes="tree.nodes"></tree-menu>
+</div>
+
+<template>
+    <div class="tree-menu">
+    <div>{{ label}}</div>
+        <tree-menu
+            v-for="node in nodes"
+            :nodes="node.nodes"
+            :label="node.label"
+        ></tree-menu>
+    </div>
+</template>
+
+
+
+
+</body>
+
+<script>
+    // export default {
+    //     props: ['label','nodes'],
+    //     name: 'tree-menu'
+    // }
+
+let tree = {
+    label: 'root',
+    nodes: [
+        {
+            label: 'level 2',
+            nodes: [{
+                label: 'level 3'
+                }]
+        },
+        {
+            label: 'level 2.b'
+        }
+    ]
+};
+
+Vue.component('tree-menu'), {
+    template: '#tree-menu',
+    props: ['nodes','label']
+
+};
+
+new Vue({
+    el: '#app',
+    data: {
+        tree
+    }
+})
+
+
+</script>
+</html>

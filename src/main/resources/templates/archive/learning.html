@@ -1,0 +1,71 @@
+<html xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+<title>Learning Vue.js is Fun</title>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+</head>
+
+<body>
+
+<div id="root">
+
+    Root div<br/>
+   <button v-bind:disabled="disabled">{{ test }}</button>
+    <button @click="toggleDisabled">Toggle the above button</button>
+    {{ test }}
+
+    <p>testing on click: <span id="spantest" :text="count"> {{ count }}</span></p>
+
+
+    <task>test
+    </task>
+
+    <task-list></task-list>
+
+
+</div>
+</body>
+<script>
+
+    var app = new Vue({
+        el: '#root',
+        data: {
+            disabled: false,
+            test: 'testing binding',
+            count: 0
+        },
+        methods: {
+            toggleDisabled() {
+                this.disabled = !this.disabled;
+                this.count = this.count+1;
+                }
+            }
+    });
+
+    Vue.component('task-list', {
+        template: '<ul><task v-for="task in tasks">{{ task.task }}</task></ul>',
+        data() {
+            return {
+                tasks: [
+                    { task: 'test', complete: true},
+                    { task: 'task 2', complete: false},
+                    { task: 'task 3', complete: false}
+                ]
+            };
+        }
+    });
+
+    Vue.component('task', {
+       template: '<li><slot></slot></li>'
+    });
+
+    new Vue({
+        el: '#root'
+    });
+
+
+
+</script>
+</html>

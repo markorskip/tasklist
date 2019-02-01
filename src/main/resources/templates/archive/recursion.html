@@ -1,0 +1,128 @@
+<html>
+<head>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<style>
+    span {
+        width: 100px;
+    }
+</style>
+<body>
+<div id="recursion">
+    {{ title }}
+    <recursion v-for="task in tasks" :name="task.name" :children="task.children" :cost="task.cost" :id="task.id" :depth="0"></recursion>
+
+
+    <div>
+        {{ tasks }} <br />
+        {{ unique_id }} <br />
+        {{ title }} <br />
+    </div>
+</div>
+
+<template id="recursion-template">
+    <div>
+        <div :style="indent">
+            <li>
+                <button @click="addChild">+</button>
+                Name: <input v-model="name"><span v-if="doIHaveChildren"> Computed Cost: {{ childCost }}</span><span> Cost: {{ cost }} </span><span>ID: {{ id }} </span>
+                <button @click="removeElement()">+</button>
+            </li>
+
+        </div>
+    <ul>
+        <recursion v-for="child in children" :name="child.name" :children="child.children" :cost="child.cost" :id="child.id" :depth="depth + 1"></recursion>
+    </ul>
+    </div>
+</template>
+
+</body>
+<script>
+
+    let tasks = {
+        title: "TaskList",
+        tasks: [
+            {id: 1, name: "Root Task", cost: 0, children: []}
+        ],
+        unique_id: 1
+    };
+
+    Vue.component('recursion', {
+        template: '#recursion-template',
+        props: ['id', 'name', 'children','cost','depth'],
+        data: function() {
+            return {
+                tasks
+            }
+        },
+        computed: {
+            doIHaveChildren() {
+                return this.children.length > 0;
+            },
+            childCost() {
+               if (this.children) {
+            },
+            var x = 0;
+    this.children.forEach(function (child)
+    {
+        x = x + child.cost;
+    });
+    this.cost = x;
+    return x;
+    }
+            indent() {
+                return { transform: `translate(${this.depth * 50}px)` }
+            }
+        },
+        methods: {
+            addChild() {
+                this.tasks.unique_id++;
+                this.children.push({id: this.tasks.unique_id, name: '', cost: '', children: []})
+            },
+            removeElement() {
+                console.log(this.id);
+
+                deleteId = this.id;
+
+                var newArray = [];
+
+                function find(data) {
+                    data.forEach(function (element) {
+                      if (element.id == deleteId) {
+                          console.log("Delete This One")
+                      } else {
+                          newArray.push(element);
+                      }
+
+                      if (element.children.length>0) {
+                          console.log("Children Found")
+                          console.log(element)
+                          find(element.children)
+                      } else {
+                          console.log("No Children")
+                          console.log(element)
+                      }
+                    })
+
+                }
+
+                find(tasks.tasks);
+
+                console.log(newArray);
+                tasks.tasks = [];
+                tasks.tasks = newArray;
+
+
+            }
+        }
+    });
+
+
+    new Vue({
+        el: "#recursion",
+        data: tasks,
+    });
+
+</script>
+</html>
