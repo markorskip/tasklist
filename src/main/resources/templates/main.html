@@ -1,4 +1,5 @@
-<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- Add this to <head> -->
     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
@@ -10,9 +11,16 @@
     <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
     <!-- For icons -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <!-- For AJAX -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <div id="app">
+
+    Welcome <span th:text ="${user.getName()}"></span> to your dashboard!
+    Username: <span th:text ="${user.getUsername()}"></span>
+
+
 
 
     <task v-for="task,index in tasks"
@@ -26,6 +34,10 @@
 
     <button @click="addRoot()">Add a Root Task</button>
 
+
+
+    <button @click="refresh()">Refresh Data</button>
+    <button @click="save()"> Save Data</button>
     <pre v-if="debug"> {{ tasks }} </pre>
 </div>
 
@@ -74,9 +86,8 @@
 
     </div>
 </template>
-</body>
 
-<script src="todo-list.js"></script>
+</body>
 <script>
 
     function Task(label, depth) {
@@ -203,6 +214,27 @@
             toggleEdit(index) {
                 this.tasks[index].edit = !this.tasks[index].edit;
                 this.tasks = reindex(this.tasks);
+            },
+            refresh() {
+                axios.get("http://localhost:8080/tasklist/1")
+                    .then((response) =>
+                    {
+                        this.tasks=JSON.parse(response.data.jsonTaskList);
+                    }, (error) => {
+                        console.log("ERROR")
+                    })
+            },
+            save() {
+                axios({
+                    method: 'put',
+                    headers: {
+                        'content-type':'application/json'
+                    },
+                    url: "http://localhost:8080/tasklist/1",
+                    data: JSON.stringify(this.tasks)
+                })
+                    .then(r => console.log(r.status))
+                    .catch(e => console.log(e));
             }
 
         }

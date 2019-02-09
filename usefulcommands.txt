@@ -1,0 +1,5 @@
+to deploy to heroku:
+
+git add .
+git commit -m "next revision"
+git push heroko master
