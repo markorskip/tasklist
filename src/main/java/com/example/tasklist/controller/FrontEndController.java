@@ -29,7 +29,7 @@ public class FrontEndController {
     public String getDashboard(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println(authentication.getName());
-        model.addAttribute("user", userRepository.findByUsername("skip"));
+        model.addAttribute("user", userRepository.findByUsername(authentication.getName()));
         return "main";
     }
 
