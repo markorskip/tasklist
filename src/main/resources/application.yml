@@ -10,7 +10,8 @@ spring:
         # The SQL dialect makes Hibernate generate better SQL for the chosen database
         dialect: org.hibernate.dialect.PostgreSQLDialect
         # Hibernate ddl auto (create, create-drop, validate, update)
-        ddl-auto: create-drop
+        hbm2ddl:
+          auto: update
         temp:
           #https://vkuzel.com/spring-boot-jpa-hibernate-atomikos-postgresql-exception
           use_jdbc_metadata_defaults: false
@@ -18,6 +19,12 @@ spring:
     database-platform: hibernate.dialect.PostgreSQL10Dialiect
     show-sql: true
     generate-ddl: true
+  h2:
+    console:
+      enabled: false
+  data:
+    rest:
+      base-path: /api
 
 
 

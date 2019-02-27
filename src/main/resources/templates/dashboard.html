@@ -1,0 +1,87 @@
+<html xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        div.tasklists {
+            width: 50%;
+            border: 1px solid black;
+        }
+    </style>
+    <!-- Add this to <head> -->
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Add this after vue.js -->
+    <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <!-- For icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <!-- For AJAX -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+
+<body>
+<div id="app">
+
+<h1>Welcome <span th:text ="${user.getName()}"></span> to your dashboard!<br/></h1>
+Username: <span th:text ="${user.getUsername()}"></span><br/>
+    <tt>Other information: <span th:text="${user.toString()}"></span><br/></tt>
+Your Tasklists test:<br/>
+<div class="tasklists">
+    <b-list-group>
+        <b-list-group-item href="#" v-for="tasklist in tasklists">{{ tasklist }}</b-list-group-item>
+    </b-list-group>
+
+</div>
+
+    <button @click="newTaskList()">Create a new TaskList</button>
+
+    {{ api_tasklist}}
+</div>
+
+</body>
+
+<script th:inline="javascript">
+    var Thymetasklists = [[${tasklists}]];
+    var th_username = [[${user.getUsername()}]];
+
+</script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            test: "testing vue",
+            debug: true,
+            tasklists: Thymetasklists,
+            username: th_username,
+            api_tasklist: ""
+        },
+        methods: {
+            newTaskList() {
+                axios.get("http://localhost:8080/api/users/" + th_username + "/tasklists/new")
+                    .then((response) => {
+                        console.log(response.data);
+                        axios.get("http://localhost:8080/api/users/" + th_username + "/tasklists/")
+                            .then((response) => {
+                                console.log(response.data);
+                                this.tasklists = response.data;
+                            }, (error) => {
+                                console.log("ERROR")
+                            })
+                    }, (error) => {
+                        console.log("ERROR")
+                    })
+            },
+            refreshTaskList() {
+
+
+            }
+        }
+    });
+
+</script>
+
+</html>

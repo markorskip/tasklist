@@ -1,4 +1,3 @@
-
 function Task(label, depth) {
     this.label = label;
     this.depth = depth;
@@ -123,9 +122,32 @@ new Vue({
         toggleEdit(index) {
             this.tasks[index].edit = !this.tasks[index].edit;
             this.tasks = reindex(this.tasks);
-        }
+        },
+        refresh() {
+            axios.get("http://localhost:8080/tasklist/1")
+                .then((response) =>
+                {
+                    console.log(response.data);
+                    this.tasks=JSON.parse(response.data.jsonTaskList);
 
+                }, (error) => {
+                    console.log("ERROR")
+                })
+        },
+        save() {
+            axios({
+                method: 'put',
+                headers: {
+                    'content-type':'application/json'
+                },
+                url: "http://localhost:8080/tasklist/1",
+                data: JSON.stringify(this.tasks)
+            })
+                .then(r => console.log(r.status))
+                .catch(e => console.log(e));
+        }
     }
-})
+});
+
 
 

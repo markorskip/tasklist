@@ -1,4 +1,4 @@
-package com.example.tasklist;
+package com.tasklist;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,7 +1,7 @@
-package com.example.tasklist.security;
+package com.tasklist.repository;
 
-import com.example.tasklist.model.User;
-import com.example.tasklist.repository.UserRepository;
+import com.tasklist.model.User;
+import com.tasklist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

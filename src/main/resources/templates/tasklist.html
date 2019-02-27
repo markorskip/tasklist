@@ -1,0 +1,90 @@
+<html xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Add this to <head> -->
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Add this after vue.js -->
+    <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <!-- For icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <!-- For AJAX -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+
+    Welcome <span th:text ="${user.getName()}"></span> to your dashboard!<br/>
+    Username: <span th:text ="${user.getUsername()}"></span><br/>
+    Other information: <span th:text="${user.toString()}"></span><br/>
+
+    <task v-for="task,index in tasks"
+          :task="task"
+          :key="index"
+          :index="index"
+          v-on:add-child="addChild($event)"
+          v-on:delete-task="deleteTask($event)"
+          v-on:toggle-edit="toggleEdit($event)"
+    ></task>
+
+    <button @click="addRoot()">Add a Root Task</button>
+
+
+
+    <button @click="refresh()">Refresh Data</button>
+    <button @click="save()"> Save Data</button>
+    <pre v-if="debug"> {{ tasks }} </pre>
+</div>
+
+<template id="task">
+    <div class="task" :style="indent">
+
+        <!-- Normal display -->
+        <div v-if="!task.edit">
+
+            <i class="fas fa-edit"  v-on:click="$emit('toggle-edit', index)"></i>
+            <i class="fas fa-plus"  v-on:click="$emit('add-child', [task, index])"></i>
+            <i v-if="!task.children" class="fas fa-trash" v-on:click="$emit('delete-task', [task, index])"></i>
+            <i class="fas fa-ban" title="Disable feature not available yet"></i>
+            <b :id="'task'+index" :title=task.label >{{ task.label }}</b>
+
+            <b-popover :target="'task'+index">
+                <table>
+                    <tr><td>Initial Cost Estimate: </td><td>${{ task.estimatedCost }}</td></tr>
+                    <tr><td>Initial Time Estimate: </td><td>{{ task.estimatedTime }} hours</td></tr>
+                    <tr><td>Date Created</td><td>{{ task.createdDate }}</td></tr>
+                </table>
+            </b-popover>
+
+            <span v-if="!task.children">
+            Cost: ${{ task.cost }}
+            Time: {{ task.time }} hours
+            </span>
+            <span v-else>
+            Total Cost: ${{task.cost}}
+            Total Time: {{ task.time }} hours
+            </span>
+
+        </div>
+
+        <!-- Edit mode -->
+        <div v-if="task.edit">
+
+            <i class="fas fa-save" v-on:click="$emit('toggle-edit',index)"></i>
+            <i v-if="!task.children" class="fas fa-trash" v-on:click="$emit('delete-task', [task, index])"></i>
+            Label: <input v-model="task.label">
+            Cost Estimate: <input v-model="task.estimatedCost">
+            Time Estimate: <input v-model="task.estimatedTime">
+            Complete? <input type="checkbox" v-model="task.complete">
+        </div>
+
+
+    </div>
+</template>
+
+</body>
+<script src="scripts/todo-list.js"></script>
+</html>

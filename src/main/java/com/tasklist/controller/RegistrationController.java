@@ -1,13 +1,12 @@
-package com.example.tasklist.security;
+package com.tasklist.controller;
 
-import com.example.tasklist.repository.UserRepository;
-import com.example.tasklist.security.RegistrationForm;
+import com.tasklist.repository.UserRepository;
+import com.tasklist.model.RegistrationForm;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import sun.security.util.Password;
 
 @Controller
 @RequestMapping("/register")

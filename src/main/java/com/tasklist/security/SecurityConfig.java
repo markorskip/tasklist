@@ -1,4 +1,4 @@
-package com.example.tasklist.security;
+package com.tasklist.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,8 +38,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/main")
-                    .access("hasRole('ROLE_USER')")
+                .antMatchers("/**")
+                .permitAll()
+//                    .antMatchers("/main","/user","/user/**")
+//                    .access("hasRole('ROLE_USER')")
                 .antMatchers("/", "/**","/tasklist/*")
                     .access("permitAll")
                 .and()
@@ -55,6 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .headers()
                     .frameOptions()
                     .sameOrigin()
+                .and()
+                    .csrf()
+                        .disable()
         ;
     }
 
