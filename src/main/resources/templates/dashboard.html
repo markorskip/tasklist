@@ -6,6 +6,7 @@
             width: 50%;
             border: 1px solid black;
         }
+
     </style>
     <!-- Add this to <head> -->
     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
@@ -24,27 +25,35 @@
 
 <body>
 <div id="app">
-
-<h1>Welcome <span th:text ="${user.getName()}"></span> to your dashboard!<br/></h1>
-Username: <span th:text ="${user.getUsername()}"></span><br/>
-    <tt>Other information: <span th:text="${user.toString()}"></span><br/></tt>
-Your Tasklists test:<br/>
+    <div>
+        <b-jumbotron header="Count the Cost" lead="A Time Money TaskList">
+            <p>v0.1</p>
+            <p>Welcome <span th:text ="${user.getName()}"></span> to your dashboard!<br/></p>
+        </b-jumbotron>
+    </div>
 <div class="tasklists">
-    <b-list-group>
-        <b-list-group-item href="#" v-for="tasklist in tasklists">{{ tasklist }}</b-list-group-item>
-    </b-list-group>
 
+    <b-card v-for="tasklist in tasklists" :title="tasklist.name" sub-title="subtitle">
+        <b-card-text>
+            <br/>
+            {{ tasklist.jsonTaskList }}
+        </b-card-text>
+        <b-card-text>
+            Users:<br/>
+            {{ tasklist.users }}
+        </b-card-text>
+        <button>Go to tasklist</button>
+        <button>Delete this list</button>
+    </b-card>
 </div>
 
     <button @click="newTaskList()">Create a new TaskList</button>
 
-    {{ api_tasklist}}
 </div>
 
 </body>
 
 <script th:inline="javascript">
-    var Thymetasklists = [[${tasklists}]];
     var th_username = [[${user.getUsername()}]];
 
 </script>
@@ -55,28 +64,30 @@ Your Tasklists test:<br/>
         data: {
             test: "testing vue",
             debug: true,
-            tasklists: Thymetasklists,
+            tasklists: null,
             username: th_username,
-            api_tasklist: ""
+        },
+        mounted() {
+            this.refreshTaskList();
         },
         methods: {
             newTaskList() {
                 axios.get("http://localhost:8080/api/users/" + th_username + "/tasklists/new")
                     .then((response) => {
                         console.log(response.data);
-                        axios.get("http://localhost:8080/api/users/" + th_username + "/tasklists/")
-                            .then((response) => {
-                                console.log(response.data);
-                                this.tasklists = response.data;
-                            }, (error) => {
-                                console.log("ERROR")
-                            })
+                        this.refreshTaskList();
                     }, (error) => {
                         console.log("ERROR")
                     })
             },
             refreshTaskList() {
-
+                axios.get("http://localhost:8080/api/users/" + th_username + "/tasklists/")
+                    .then((response) => {
+                        console.log(response.data);
+                        this.tasklists = response.data._embedded.tasklists;
+                    }, (error) => {
+                        console.log(error)
+                    })
 
             }
         }

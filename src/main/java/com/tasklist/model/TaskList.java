@@ -23,8 +23,16 @@ public class TaskList {
     @Column(length = 1000000)
     private String jsonTaskList;
 
+    @Column
+    private String tasklistName;
+
     public TaskList(String jsonTaskList) {
         this.jsonTaskList = jsonTaskList;
+    }
+
+    public TaskList(String jsonTaskList, String tasklistName) {
+        this.jsonTaskList = jsonTaskList;
+        this.tasklistName = tasklistName;
     }
 
     public TaskList() {
@@ -54,6 +62,13 @@ public class TaskList {
         this.jsonTaskList = jsonTaskList;
     }
 
+    public String getTasklistName() {
+        return tasklistName;
+    }
+
+    public void setTasklistName(String tasklistName) {
+        this.tasklistName = tasklistName;
+    }
 
     // If we print ths users it can create an infinite loop......
     @Override
