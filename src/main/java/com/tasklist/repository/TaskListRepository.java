@@ -1,8 +1,6 @@
 package com.tasklist.repository;
 
 import com.tasklist.model.TaskList;
-import javafx.concurrent.Task;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
