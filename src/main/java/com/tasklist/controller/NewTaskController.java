@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.tasklist.model.data.Data.newTaskString;
+
 
 @BasePathAwareController
 public class NewTaskController {
@@ -29,12 +31,14 @@ public class NewTaskController {
     @Autowired
     private TaskListRepository taskListRepository;
 
+    private String newTaskStringJson = newTaskString;
+
     @GetMapping(path = "/users/{user}/tasklists/new")
     public @ResponseBody ResponseEntity<?> createNewTaskList(@PathVariable("user") String user) {  //@RequestBody TaskList taskList @RequestBody binds json to a java object automatically
         System.out.println("Attempting to create a new tasklist for user: " + user);
         User userToUpdate = userRepository.findByUsername(user);
         if (userToUpdate!= null) {
-            TaskList taskList = new TaskList("[{\"label\":\"New tasklist\"}]");
+            TaskList taskList = new TaskList(newTaskStringJson);
             userToUpdate.getTasklists().add(taskList);
             userToUpdate = userRepository.save(userToUpdate);
             System.out.println(userToUpdate);

@@ -13,6 +13,14 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <!-- For AJAX -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+
+        #main {
+            padding:15px;
+        }
+
+
+    </style>
 </head>
 <body>
 <div id="app">
@@ -25,8 +33,7 @@
         </b-navbar-nav>
     </b-navbar>
 
-    Tasklist ID: <span th:text ="${taskListId}"></span><br/>
-    Tasklist: <span th:text="${taskList}"></span><br/>
+<div id="main">
 
     <task v-for="task,index in tasks"
           :task="task"
@@ -44,6 +51,8 @@
     <button @click="refresh()">Refresh Data</button>
     <button @click="save()"> Save Data</button>
     <pre v-if="debug"> {{ tasks }} </pre>
+</div>
+
 </div>
 
 <template id="task">
@@ -91,6 +100,7 @@
 
     </div>
 </template>
+
 
 </body>
 <script th:inline="javascript">
@@ -248,9 +258,7 @@
                     url: "/api/tasklists/" + tasklist_id ,
                     data: { jsonTaskList : JSON.stringify(this.tasks)}
                 })
-                    .then(r => console.log(r.status),
-                    this.refresh()
-                    )
+                    .then(r => console.log(r.status))
                     .catch(e =>
                         console.log(e),
                         console.log(this.tasks)

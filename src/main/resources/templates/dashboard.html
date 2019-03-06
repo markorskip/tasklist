@@ -47,7 +47,9 @@
         </b-card-text>
         <b-card-text>
             Users:<br/>
-            {{ tasklist.users }}
+            <li v-for="user in tasklist.users" >
+                {{ user.username }}
+            </li>
 
             <a v-bind:href="'/tasklist/' + tasklist.id">Go to tasklist {{ tasklist.id }}</a>
         </b-card-text>
