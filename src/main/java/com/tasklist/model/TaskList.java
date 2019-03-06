@@ -5,9 +5,11 @@ import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
+@Data
 @Entity
 @Table(name="task_list")
 @RestResource(rel="tasklists",path="tasklists")
@@ -17,57 +19,26 @@ public class TaskList {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tasklists")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "tasklists")
     private Set<User> users = new HashSet<>();
 
     @Column(length = 1000000)
     private String jsonTaskList;
 
     @Column
-    private String tasklistName;
+    private String taskListName;
 
     public TaskList(String jsonTaskList) {
         this.jsonTaskList = jsonTaskList;
+        this.taskListName = "New Tasklist";
     }
 
-    public TaskList(String jsonTaskList, String tasklistName) {
+    public TaskList(String jsonTaskList, String taskListName) {
         this.jsonTaskList = jsonTaskList;
-        this.tasklistName = tasklistName;
+        this.taskListName = taskListName;
     }
 
     public TaskList() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public String getJsonTaskList() {
-        return jsonTaskList;
-    }
-
-    public void setJsonTaskList(String jsonTaskList) {
-        this.jsonTaskList = jsonTaskList;
-    }
-
-    public String getTasklistName() {
-        return tasklistName;
-    }
-
-    public void setTasklistName(String tasklistName) {
-        this.tasklistName = tasklistName;
     }
 
     // If we print ths users it can create an infinite loop......

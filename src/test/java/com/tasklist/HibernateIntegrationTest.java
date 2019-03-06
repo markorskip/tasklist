@@ -69,16 +69,14 @@ public class HibernateIntegrationTest {
 
         //Save the user
         System.out.println("Before save: " + test_user);
-        userRepository.save(test_user);
-
-        User saved_user = userRepository.findByUsername(test_user.getUsername());
-        System.out.println(saved_user);
+        test_user = userRepository.save(test_user);
 
         //Assert the tasklist was saved
-        for (TaskList taskList: saved_user.getTasklists()) {
+        for (TaskList taskList: test_user.getTasklists()) {
             System.out.println(taskList);
             Optional<TaskList> foundTaskList = taskListRepository.findById(taskList.getId());
             assert(foundTaskList.isPresent());
+
         }
 
         //Assert one user was saved and two tasks were created
@@ -87,9 +85,19 @@ public class HibernateIntegrationTest {
 
         //Clean up - delete the user
         userRepository.deleteById(test_user.getUsername());
+
+        for (TaskList taskList: test_user.getTasklists()) {
+            System.out.println(taskList);
+            taskListRepository.delete(taskList);
+        }
+
        //Assert user does not exist, user deleted, and tasks deleted
         assert(userRepository.findByUsername(test_username)==null);
         assert(userRepository.count()==userCount);
+
+        //Assert the associated tasks were deleted
+        System.out.println(tasklistCount);
+        System.out.println(taskListRepository.count());
         assert(taskListRepository.count()==tasklistCount);
     }
 

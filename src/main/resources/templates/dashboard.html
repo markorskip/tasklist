@@ -25,29 +25,41 @@
 
 <body>
 <div id="app">
-    <div>
-        <b-jumbotron header="Count the Cost" lead="A Time Money TaskList">
-            <p>v0.1</p>
-            <p>Welcome <span th:text ="${user.getName()}"></span> to your dashboard!<br/></p>
-        </b-jumbotron>
-    </div>
+
+    <b-navbar>
+        <b-navbar-nav>
+            <b-nav-item href="/dashboard">Dashboard</b-nav-item>
+            <b-nav-item href="/">Home</b-nav-item>
+            <b-nav-item href="/logout">Logout</b-nav-item>
+        </b-navbar-nav>
+    </b-navbar>
+
 <div class="tasklists">
 
-    <b-card v-for="tasklist in tasklists" :title="tasklist.name" sub-title="subtitle">
+    <b-card v-for="tasklist in tasklists" align="center">
+        <b-card-title>
+            {{ tasklist.taskListName }}
+        </b-card-title>
+
         <b-card-text>
             <br/>
-            {{ tasklist.jsonTaskList }}
+            {{ tasklist }}
         </b-card-text>
         <b-card-text>
             Users:<br/>
             {{ tasklist.users }}
+
+            <a v-bind:href="'/tasklist/' + tasklist.id">Go to tasklist {{ tasklist.id }}</a>
         </b-card-text>
-        <button>Go to tasklist</button>
-        <button>Delete this list</button>
+        <span slot="footer">
+            <b-button @click="deleteTaskList(tasklist)">Delete this list</b-button>
+            <b-button>Invite users</b-button>
+        </span>
+
     </b-card>
 </div>
 
-    <button @click="newTaskList()">Create a new TaskList</button>
+    <b-button @click="newTaskList()">Create a new TaskList</b-button>
 
 </div>
 
@@ -72,7 +84,7 @@
         },
         methods: {
             newTaskList() {
-                axios.get("http://localhost:8080/api/users/" + th_username + "/tasklists/new")
+                axios.get("/api/users/" + th_username + "/tasklists/new")
                     .then((response) => {
                         console.log(response.data);
                         this.refreshTaskList();
@@ -81,7 +93,7 @@
                     })
             },
             refreshTaskList() {
-                axios.get("http://localhost:8080/api/users/" + th_username + "/tasklists/")
+                axios.get("/api/users/" + th_username + "/tasklists/")
                     .then((response) => {
                         console.log(response.data);
                         this.tasklists = response.data._embedded.tasklists;
@@ -89,6 +101,19 @@
                         console.log(error)
                     })
 
+            },
+            deleteTaskList(tasklist) {
+                console.log(tasklist);
+                axios.delete("/api/users/"+th_username+"/tasklists/del/"+tasklist.id)
+                    .then((response) => {
+                        console.log(tasklist)
+                        console.log(response);
+                        this.refreshTaskList();
+                }, (error) =>
+                    {
+                        console.log(tasklist);
+                        console.log(error)
+                    })
             }
         }
     });

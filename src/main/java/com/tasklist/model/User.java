@@ -9,10 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity(name = "User")
@@ -26,7 +23,7 @@ public class User implements UserDetails {
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER,
-            cascade = { CascadeType.ALL})
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "users_task_list",
             joinColumns = { @JoinColumn(name="users_username")},
@@ -104,5 +101,21 @@ public class User implements UserDetails {
                 ", email='" + email + '\'' +
                 ", tasklists=" + tasklists.toString() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return Objects.equals(getUsername(), user.getUsername()) &&
+                Objects.equals(getPassword(), user.getPassword()) &&
+                Objects.equals(getName(), user.getName()) &&
+                Objects.equals(getEmail(), user.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUsername(), getPassword(), getName(), getEmail());
     }
 }

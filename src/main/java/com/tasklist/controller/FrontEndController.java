@@ -39,15 +39,18 @@ public class FrontEndController {
         String username = authentication.getName();
         System.out.println(authentication.getName());
         User user = userRepository.findByUsername(username);
-        Optional<TaskList> taskList = taskListRepository.findById(id);
+        Optional<TaskList> optionalTaskList = taskListRepository.findById(id);
 
-        if (!taskList.isPresent()) {
+        if (!optionalTaskList.isPresent()) {
             model.addAttribute("error","Tasklist with id: " + id + " not found");
             return "error";
         }
 
         if (user != null) {
+            TaskList taskList = optionalTaskList.get();
             model.addAttribute("user", userRepository.findByUsername(username));
+            model.addAttribute("taskListId",taskList.getId());
+            model.addAttribute("taskList", taskList);
             return "tasklist";
         }
         return "redirect:/login";
@@ -75,4 +78,6 @@ public class FrontEndController {
             }
         }  return "redirect:/login";
     }
+
+
 }
