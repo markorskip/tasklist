@@ -16,10 +16,17 @@
 <div id="app" class="centered">
     <div th:insert="fragments/navbar :: navbar"></div>
 
-<!--<div @click="toggleEditName">-->
-    <!--<div v-if="!editName">{{ name }} </div>-->
-    <!--<div v-else><input v-model="name"></div>-->
-<!--</div>-->
+<div>
+    <h1>
+    <div v-if="!editName">
+        <i class="fas fa-edit"  @click="toggleEditName"></i> {{ name }}
+    </div>
+    <div v-else>
+        <i class="fas fa-save" @click="toggleEditName"></i>
+        <input v-model="name">
+    </div>
+    </h1>
+</div>
 
 
     <div id="main">
@@ -35,6 +42,8 @@
         <button @click="addRoot()">Add a Root Task</button>
         <button @click="refresh()">Refresh Data</button>
         <button @click="save()"> Save Data</button>
+
+        <pre v-if="debug">{{ name }}</pre>
         <pre v-if="debug">{{ tasks }} </pre>
     </div>
 

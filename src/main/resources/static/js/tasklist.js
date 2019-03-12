@@ -97,9 +97,9 @@ new Vue({
     el: '#app',
     data: {
         tasks: init,
-        //name: null,
-        debug: true
-        //editName: false
+        name: null,
+        debug: true,
+        editName: false
     },
     mounted() {
         this.refresh();
@@ -129,9 +129,9 @@ new Vue({
             this.tasks[index].edit = !this.tasks[index].edit;
             this.tasks = reindex(this.tasks);
         },
-        // toggleEditName() {
-        //     this.editName = !this.editName;
-        // },
+        toggleEditName() {
+            this.editName = !this.editName;
+        },
         refresh() {
             axios.get("/api/tasklists/" + tasklist_id)
                 .then((response) =>
@@ -155,7 +155,7 @@ new Vue({
                 url: "/api/tasklists/" + tasklist_id ,
                 data: {
                     jsonTaskList : JSON.stringify(this.tasks),
-                    taskListName : this.taskListName
+                    taskListName : this.name
                 }
             })
                 .then(r => console.log(r.status))
