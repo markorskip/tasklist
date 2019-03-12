@@ -1,49 +1,29 @@
 <html xmlns:v-on="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <style>
-        div.tasklists {
-            width: 50%;
-            border: 1px solid black;
-        }
-
-    </style>
-    <!-- Add this to <head> -->
-    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
-    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
-    <!-- development version, includes helpful console warnings -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <!-- Add this after vue.js -->
-    <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-    <!-- For icons -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <!-- For AJAX -->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-</head>
-
-
+<head th:insert="fragments/header :: header"></head>
 <body>
-<div id="app">
 
-    <b-navbar>
-        <b-navbar-nav>
-            <b-nav-item href="/dashboard">Dashboard</b-nav-item>
-            <b-nav-item href="/">Home</b-nav-item>
-            <b-nav-item href="/logout">Logout</b-nav-item>
-        </b-navbar-nav>
-    </b-navbar>
+<div id="app">
+    <div th:insert="fragments/navbar :: navbar"></div>
 
 <div class="tasklists">
 
     <b-card v-for="tasklist in tasklists" align="center">
-        <b-card-title>
+        <b-card-title @click="toggleEdit()">
+
+            <div v-if="edit">
+                Tasklist Name: <input v-model="tasklist.taskListName">
+            </div>
+            <div v-else>
             {{ tasklist.taskListName }}
+            </div>
+
+
         </b-card-title>
 
         <b-card-text>
             <br/>
-            {{ tasklist }}
+            Here you will find overview details of the tasklist like total time and total cost, time so far and cost so far.
         </b-card-text>
         <b-card-text>
             Users:<br/>
@@ -51,11 +31,13 @@
                 {{ user.username }}
             </li>
 
-            <a v-bind:href="'/tasklist/' + tasklist.id">Go to tasklist {{ tasklist.id }}</a>
+            <a :href="'/tasklist/' + tasklist.id">Go to tasklist {{ tasklist.id }}</a>
         </b-card-text>
         <span slot="footer">
             <b-button @click="deleteTaskList(tasklist)">Delete this list</b-button>
             <b-button>Invite users</b-button>
+            <b-button v-b-modal="modal">Details</b-button>
+            <b-modal id="modal">Modal: {{ tasklist }}</b-modal>
         </span>
 
     </b-card>
@@ -67,59 +49,10 @@
 
 </body>
 
+
 <script th:inline="javascript">
     var th_username = [[${user.getUsername()}]];
-
 </script>
 
-<script>
-    new Vue({
-        el: '#app',
-        data: {
-            test: "testing vue",
-            debug: true,
-            tasklists: null,
-            username: th_username,
-        },
-        mounted() {
-            this.refreshTaskList();
-        },
-        methods: {
-            newTaskList() {
-                axios.get("/api/users/" + th_username + "/tasklists/new")
-                    .then((response) => {
-                        console.log(response.data);
-                        this.refreshTaskList();
-                    }, (error) => {
-                        console.log("ERROR")
-                    })
-            },
-            refreshTaskList() {
-                axios.get("/api/users/" + th_username + "/tasklists/")
-                    .then((response) => {
-                        console.log(response.data);
-                        this.tasklists = response.data._embedded.tasklists;
-                    }, (error) => {
-                        console.log(error)
-                    })
-
-            },
-            deleteTaskList(tasklist) {
-                console.log(tasklist);
-                axios.delete("/api/users/"+th_username+"/tasklists/del/"+tasklist.id)
-                    .then((response) => {
-                        console.log(tasklist)
-                        console.log(response);
-                        this.refreshTaskList();
-                }, (error) =>
-                    {
-                        console.log(tasklist);
-                        console.log(error)
-                    })
-            }
-        }
-    });
-
-</script>
-
+<script src="/js/dashboard.js"></script>
 </html>
